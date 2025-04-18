@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>البنوك الجزائرية</title>
+  <style>
+    :root {
+      --bg-color: #121212;
+      --text-color: #f0f0f0;
+      --card-bg: #1e1e1e;
+      --header-bg: #1f1f1f;
+      --border-color: #333;
+      --highlight: #ffd700;
+      --primary: #00bcd4;
+      --link: #ff9800;
+    }
+
+    body.light-mode {
+      --bg-color: #ffffff;
+      --text-color: #000000;
+      --card-bg: #f4f4f4;
+      --header-bg: #eeeeee;
+      --border-color: #cccccc;
+      --highlight: #ff9800;
+      --primary: #0077b6;
+      --link: #0077b6;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Arial', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    header {
+      background-color: var(--header-bg);
+      padding: 0;
+      margin: 0;
+    }
+
+    #video-section {
+      position: relative;
+      width: 100%;
+      height: 250px;
+      overflow: hidden;
+    }
+
+    #video-section video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    #modeToggle {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 10;
+      background-color: var(--card-bg);
+      color: var(--text-color);
+      border: none;
+      padding: 8px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .controls {
+      padding: 10px 20px;
+      text-align: center;
+      background-color: var(--header-bg);
+    }
+
+    #title {
+      font-size: 28px;
+      color: var(--highlight);
+      margin-bottom: 15px;
+    }
+
+    #langSelector, #filterSelector {
+      margin: 10px;
+      padding: 8px;
+      border-radius: 5px;
+      border: none;
+      background-color: var(--card-bg);
+      color: var(--text-color);
+    }
+
+    .bank {
+      text-align: center;
+      background-color: var(--card-bg);
+      margin: 20px;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px #00000040;
+      transform: translateY(20px);
+      opacity: 0;
+      transition: all 0.6s ease-in-out;
+    }
+
+    .bank.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .bank img {
+      width: 120px;
+      height: auto;
+      border-radius: 10px;
+      margin-top: 15px;
+    }
+
+    .bank-content h2 {
+      color: var(--primary);
+      margin-bottom: 10px;
+    }
+
+    .bank-content p {
+      margin: 10px 0;
+    }
+
+    .bank-content a {
+      color: var(--link);
+      text-decoration: none;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      background-color: var(--header-bg);
+      border-top: 2px solid var(--border-color);
+      font-size: 14px;
+    }
+
+    .social-links a {
+      margin: 0 10px;
+      color: var(--text-color);
+      text-decoration: none;
+    }
+
+    @media (max-width: 768px) {
+      .bank img {
+        width: 80%;
+        max-width: 250px;
+      }
+
+      #title {
+        font-size: 22px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div id="video-section">
+      <button id="modeToggle">☀ / ☾</button>
+      <video autoplay muted loop>
+        <source src="https://cdn.coverr.co/videos/coverr-people-at-the-atm-5089/1080p.mp4" type="video/mp4">
+      </video>
+    </div>
+  </header>
+
+  <div class="controls">
+    <div id="title">البنوك الجزائرية</div>
+    <div>
+      <label for="langSelector">اللغة:</label>
+      <select id="langSelector">
+        <option value="ar">العربية</option>
+        <option value="en">English</option>
+        <option value="fr">Français</option>
+      </select>
+    </div>
+    <div>
+      <label for="filterSelector">نوع البنك:</label>
+      <select id="filterSelector">
+        <option value="all">جميع البنوك</option>
+        <option value="public">عمومي</option>
+        <option value="private">خاص</option>
+        <option value="islamic">إسلامي</option>
+      </select>
+    </div>
+  </div>
+
+  <div id="banks-container"></div>
+
+  <footer>
+    Created by <a href="https://aw-studio-dev.github.io/showcase/" target="_blank" style="color:var(--highlight);">WA Creatives</a> |
+    <span class="social-links">
+      <a href="https://www.facebook.com/profile.php?id=61567468048179" target="_blank">Facebook</a> |
+      <a href="https://www.tiktok.com/@aw.studio.dz?_t=ZM-8vdcPrEnalS&_r=1" target="_blank">TikTok</a> |
+      <a href="mailto:aw.studio.dz@gmail.com">Email</a>
+    </span>
+  </footer>
+
+  <script>
+    const banks = [
+      {
+        type: "public",
+        image: "https://i.pinimg.com/736x/bd/52/6f/bd526faa34f9f2922c72228dd335e334.jpg",
+        site: "https://www.bea.dz",
+        ar: { name: "بنك الجزائر الخارجي (BEA)", desc: "يقدم خدمات مصرفية متنوعة ويملك فروعاً داخل وخارج الجزائر." },
+        en: { name: "External Bank of Algeria (BEA)", desc: "Offers various banking services with branches inside and outside Algeria." },
+        fr: { name: "Banque Extérieure d'Algérie (BEA)", desc: "Propose divers services bancaires avec des agences en Algérie et à l'étranger." }
+      },
+      {
+        type: "public",
+        image: "https://i.pinimg.com/736x/3b/1a/b4/3b1ab42377b2f1343943f12e045fe30c.jpg",
+        site: "https://www.bna.dz",
+        ar: { name: "البنك الوطني الجزائري (BNA)", desc: "أحد أقدم البنوك في الجزائر ويقدم خدمات مصرفية متنوعة." },
+        en: { name: "National Bank of Algeria (BNA)", desc: "One of the oldest banks in Algeria offering diverse banking services." },
+        fr: { name: "Banque Nationale d'Algérie (BNA)", desc: "L'une des plus anciennes banques d'Algérie avec des services variés." }
+      },
+      {
+        type: "public",
+        image: "https://i.pinimg.com/736x/3c/03/9d/3c039d2395663a918cd32c92f3d25c8e.jpg",
+        site: "https://www.cpa-bank.dz",
+        ar: { name: "القرض الشعبي الجزائري (CPA)", desc: "يدعم المؤسسات الصغيرة والمتوسطة بخدمات تمويلية." },
+        en: { name: "Popular Credit of Algeria (CPA)", desc: "Supports SMEs with financing and banking services." },
+        fr: { name: "Crédit Populaire d'Algérie (CPA)", desc: "Soutient les PME avec des services financiers." }
+      },
+      {
+        type: "islamic",
+        image: "https://i.pinimg.com/736x/2f/3e/12/2f3e126168c251ab3ed0790a14f5330b.jpg",
+        site: "https://www.albaraka-bank.com",
+        ar: { name: "بنك البركة الجزائر", desc: "بنك إسلامي يقدم خدمات متوافقة مع الشريعة." },
+        en: { name: "Al Baraka Bank Algeria", desc: "Islamic bank offering Sharia-compliant services." },
+        fr: { name: "Banque Al Baraka Algérie", desc: "Banque islamique avec services conformes à la charia." }
+      }
+    ];
+
+    const langSelector = document.getElementById("langSelector");
+    const filterSelector = document.getElementById("filterSelector");
+    const container = document.getElementById("banks-container");
+    const title = document.getElementById("title");
+    const modeToggle = document.getElementById("modeToggle");
+
+    function renderBanks(lang, filter) {
+      container.innerHTML = "";
+      banks.forEach(bank => {
+        if (filter !== "all" && bank.type !== filter) return;
+        const div = document.createElement("div");
+        div.classList.add("bank");
+        div.innerHTML = `
+          <div class="bank-content">
+            <h2>${bank[lang].name}</h2>
+            <p>${bank[lang].desc}</p>
+            <p><a href="${bank.site}" target="_blank">${bank.site}</a></p>
+            <img src="${bank.image}" alt="logo">
+          </div>`;
+        container.appendChild(div);
+        setTimeout(() => div.classList.add("show"), 100);
+      });
+    }
+
+    function updateLanguage() {
+      const lang = langSelector.value;
+      const filter = filterSelector.value;
+      document.body.dir = lang === "ar" ? "rtl" : "ltr";
+      document.documentElement.lang = lang;
+
+      title.textContent =
+        lang === "ar" ? "البنوك الجزائرية" :
+        lang === "en" ? "Algerian Banks" :
+        "Banques Algériennes";
+
+      document.querySelector('label[for="langSelector"]').textContent =
+        lang === "ar" ? "اللغة:" :
+        lang === "en" ? "Language:" : "Langue :";
+
+      document.querySelector('label[for="filterSelector"]').textContent =
+        lang === "ar" ? "نوع البنك:" :
+        lang === "en" ? "Bank Type:" : "Type de banque :";
+
+      filterSelector.options[0].text =
+        lang === "ar" ? "جميع البنوك" :
+        lang === "en" ? "All Banks" : "Toutes les banques";
+      filterSelector.options[1].text =
+        lang === "ar" ? "عمومي" :
+        lang === "en" ? "Public" : "Public";
+      filterSelector.options[2].text =
+        lang === "ar" ? "خاص" :
+        lang === "en" ? "Private" : "Privé";
+      filterSelector.options[3].text =
+        lang === "ar" ? "إسلامي" :
+        lang === "en" ? "Islamic" : "Islamique";
+
+      renderBanks(lang, filter);
+    }
+
+    langSelector.addEventListener("change", updateLanguage);
+    filterSelector.addEventListener("change", updateLanguage);
+
+    modeToggle.addEventListener("click", () => {
+      document.body.classList.toggle("light-mode");
+    });
+
+    updateLanguage();
+  </script>
+</body>
+</html>
+    
+     
